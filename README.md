@@ -6,7 +6,6 @@ How to BSOS [Bindshell over SSL] ver 1.0
 <br/>
 For the server side (the victim)
 
-
 1. create the certificate:
    1. move to the makecert location, in my case C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64
    1. open a cmd as administrator and execute the following: makecert.exe -r -pe -n "CN=localhost" -sky exchange -sv server.pvk server.cer
