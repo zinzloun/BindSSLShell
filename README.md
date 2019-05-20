@@ -17,11 +17,11 @@ In our attacker machine (Kali Linux) we will use stunnel (since the server requi
 1. install stunnel:
 	1. apt-get install stunnel
 1. configure stunnel to forward nc traffic over his ssl tunnel. we must create the file /etc/stunnel/stunnel.conf with the following content:
-	>[nc]
-	>client = yes
-	>accept = localhost:8443
-	>connect = <Victim IP>:6666
-	--- end of file ---
+	>[nc]<br/>
+	>client = yes<br/>
+	>accept = localhost:8443<br/>
+	>connect = <Victim IP>:6666<br/>
+	
 	<br/>so we listeng on the port 8443 and we forward the traffic to the victim IP port 6666. Of coures you have to set the Victim Ip (server side) value according
 	
 1. start stunnel
