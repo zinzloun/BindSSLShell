@@ -5,6 +5,14 @@ How to BSOS [Bindshell over SSL] ver 1.0
 * -Client (the attacker): Kali Linux with stunnel installed
 <br/>
 For the server side (the victim)
+
+1. Item 1
+1. Item 2
+1. Item 3
+   1. Item 3a
+   1. Item 3b
+
+
 1. create the certificate:
 	1. move to the makecert location, in my case C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64
 	2. open a cmd as administrator and execute the following: makecert.exe -r -pe -n "CN=localhost" -sky exchange -sv server.pvk server.cer
