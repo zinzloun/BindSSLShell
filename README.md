@@ -1,17 +1,14 @@
 # BindSSLShell
 How to BSOS [Bindshell over SSL] ver 1.0
 
--Server (the victim): BindSSLShell.exe, console application coded in C# (FW Net 3.5) IDE Visual Studio CE 2017
--Client (the attacker): Kali Linux with stunnel installed
+* -Server (the victim): BindSSLShell.exe, console application coded in C# (FW Net 3.5) IDE Visual Studio CE 2017
+* -Client (the attacker): Kali Linux with stunnel installed
 <br/>
 For the server side (the victim)
-1 create the certificate:
-	move to the makecert location, in my case C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64
-	open a cmd as administrator and execute the following:
-	 makecert.exe -r -pe -n "CN=localhost" -sky exchange -sv server.pvk server.cer
-	enter required password, then execute:
-	 pvk2pfx -pvk server.pvk -spc server.cer -pfx server.pfx
-	enter required server password
+1. create the certificate:
+	1. move to the makecert location, in my case C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64
+	2. open a cmd as administrator and execute the following: makecert.exe -r -pe -n "CN=localhost" -sky exchange -sv server.pvk server.cer
+	3. enter required password, then execute: pvk2pfx -pvk server.pvk -spc server.cer -pfx server.pfx. Enter required server password
 
 2 include the Server.pfx as resource in your VS project (console app) and set the Copy to the output directory as Copy.
 	Eventually you can embed the certificate and load it at runtime, more info:
