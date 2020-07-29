@@ -1,4 +1,6 @@
 # BindSSLShell
+### New release available: BindSSLShellv2
+
 How to BSOS [Bindshell over SSL] ver 1.0
 
 * -Server (the victim): BindSSLShell.exe, console application coded in C# (FW Net 3.5) IDE Visual Studio CE 2017
