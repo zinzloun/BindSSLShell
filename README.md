@@ -20,6 +20,6 @@ On the server side
 In our client machine issue the following to connect to the server:
 `openssl s_client -connect 192.168.1.5:443`
 
-1. issue help to get a brief <b>help</b>. The client console accept standard DOS command
+1. issue <b>help</b> to get a brief <b>help</b>. The client console accept standard DOS command
 <br>![Screenshot](desk.png)
 
