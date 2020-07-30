@@ -3,7 +3,7 @@
 
 How to BSOS [Bindshell over SSL] ver 3.0
 
-* -Server: BindSSLShell.exe, console application coded in C# (FW Net 3.5) IDE Visual Studio CE 2019
+* -Server: BindSSLShell.exe, console application coded in C# (FW Net 4.5) IDE Visual Studio CE 2019, support TLS1.2
 * -Client: Any machine with openssl installed
 <br/>
 On the server side
