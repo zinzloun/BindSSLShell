@@ -1,6 +1,7 @@
 /*
  * BSOS [Bindshell over SSL] ver 3.0
- * console application coded in C# (FW Net 3.5) IDE Visual Studio CE 2019
+ * console application coded in C# (FW Net 4.5) IDE Visual Studio CE 2019
+ * support tls1.2
  * by Zinzloun 
  * No more jokes
  * 
@@ -89,9 +90,9 @@ namespace BindSSLShell
 
                 Stream sNS = new NetworkStream(mainSocket);
 
-                //we create the SSL stream, no client authentication is required, we support SSL3 and TLS
+                //we create the SSL stream, no client authentication is required, support Tls12
                 SslStream sslStream = new SslStream(sNS);
-                sslStream.AuthenticateAsServer(serverCertificate, clientCertificateRequired: false, enabledSslProtocols: SslProtocols.Ssl3, checkCertificateRevocation: true);
+                sslStream.AuthenticateAsServer(serverCertificate, clientCertificateRequired: false, enabledSslProtocols: SslProtocols.Tls12, checkCertificateRevocation: true);
 
                 if (verbose)
                     DisplayCertificateInformation(sslStream);
