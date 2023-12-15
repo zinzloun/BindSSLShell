@@ -85,7 +85,7 @@ namespace BindSSLShell
                 if (verbose)
                     Console.WriteLine("Client connected: " + mainSocket.RemoteEndPoint);
 
-                //load the certificate: leave the password empty, doesn't mind
+                //load the certificate, eventually the password
                 X509Certificate2 serverCertificate = new X509Certificate2("server.pfx", "");
 
                 Stream sNS = new NetworkStream(mainSocket);
